@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Property Insurance Quality Check</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+:root{
+  --bg:#080a0f;--surface:#111520;--surface2:#171c2c;--surface3:#1e2438;
+  --border:#252d45;--border2:#2e3850;
+  --accent:#00d4ff;--accent2:#0085ff;--accent3:#7b2fff;
+  --pass:#00e887;--pass-bg:rgba(0,232,135,0.07);
+  --fail:#ff4d6a;--fail-bg:rgba(255,77,106,0.07);
+  --warn:#ffb347;--warn-bg:rgba(255,179,71,0.07);
+  --stop:#ff2d55;--stop-bg:rgba(255,45,85,0.12);
+  --text:#dce4f5;--text2:#8a97bb;--muted:#424d6b;
+  --sans:'DM Sans',sans-serif;--brand:'Orbitron',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;
+  background-image:radial-gradient(ellipse 80% 40% at 50% -10%,rgba(0,133,255,0.08) 0%,transparent 70%),
+  radial-gradient(ellipse 40% 30% at 90% 10%,rgba(123,47,255,0.06) 0%,transparent 60%);}
+.app{max-width:1200px;margin:0 auto;padding:36px 24px 80px;}
+/* Header */
+.brand-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:48px;padding-bottom:28px;border-bottom:1px solid var(--border);}
+.brand-left{display:flex;align-items:center;gap:16px;}
+.brand-logo{width:52px;height:52px;border-radius:14px;flex-shrink:0;background:linear-gradient(135deg,var(--accent2),var(--accent3));display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 0 24px rgba(0,133,255,0.3);position:relative;overflow:hidden;}
+.brand-logo::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.15) 0%,transparent 60%);}
+.brand-name{font-family:var(--brand);font-size:22px;font-weight:900;letter-spacing:3px;text-transform:uppercase;background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.brand-sub{font-size:12px;color:var(--text2);letter-spacing:1.5px;text-transform:uppercase;margin-top:3px;}
+.brand-right{display:flex;align-items:center;gap:10px;}
+.brand-badge{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:5px 14px;font-size:11px;color:var(--text2);letter-spacing:1px;text-transform:uppercase;}
+.live-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--pass);margin-right:5px;animation:pulse 1.8s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.8)}}
+/* Upload */
+.upload-zone{border:2px dashed var(--border2);border-radius:20px;padding:56px 32px;text-align:center;cursor:pointer;transition:all 0.25s;background:var(--surface);margin-bottom:32px;position:relative;overflow:hidden;}
+.upload-zone::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 100%,rgba(0,133,255,0.04) 0%,transparent 70%);pointer-events:none;}
+.upload-zone:hover,.upload-zone.drag-over{border-color:var(--accent2);background:rgba(0,133,255,0.04);}
+.upload-zone input{display:none;}
+.upload-icon{font-size:42px;margin-bottom:16px;display:block;}
+.upload-zone h2{font-size:18px;font-weight:700;margin-bottom:8px;font-family:var(--brand);letter-spacing:1px;}
+.upload-zone p{font-size:13px;color:var(--text2);line-height:1.7;}
+.btn-upload{display:inline-block;margin-top:20px;padding:12px 32px;background:linear-gradient(135deg,var(--accent2),var(--accent3));color:#fff;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;border:none;transition:all 0.2s;font-family:var(--sans);letter-spacing:0.5px;box-shadow:0 4px 20px rgba(0,133,255,0.25);}
+.btn-upload:hover{transform:translateY(-1px);}
+/* Progress */
+.progress-wrap{display:none;margin-bottom:28px;}
+.progress-label{font-size:12px;color:var(--text2);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.progress-track{height:4px;background:var(--surface2);border-radius:4px;overflow:hidden;}
+.progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--accent2),var(--accent),var(--accent3));border-radius:4px;transition:width 0.3s;}
+/* Summary */
+.summary-bar{display:none;gap:14px;margin-bottom:28px;flex-wrap:wrap;}
+.summary-card{flex:1;min-width:130px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px;}
+.sc-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:8px;font-weight:600;}
+.sc-val{font-family:var(--brand);font-size:30px;font-weight:700;}
+.sc-total .sc-val{color:var(--text);}
+.sc-pass .sc-val{color:var(--pass);}
+.sc-fail .sc-val{color:var(--fail);}
+.sc-warn .sc-val{color:var(--warn);}
+/* Toolbar */
+.toolbar{display:none;gap:8px;margin-bottom:20px;flex-wrap:wrap;align-items:center;}
+.filter-btn{padding:7px 18px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text2);font-size:13px;cursor:pointer;transition:all 0.15s;font-family:var(--sans);font-weight:500;}
+.filter-btn:hover{border-color:var(--accent2);color:var(--text);}
+.filter-btn.active{background:linear-gradient(135deg,var(--accent2),var(--accent3));border-color:transparent;color:#fff;}
+.search-box{margin-left:auto;padding:8px 16px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:13px;width:210px;font-family:var(--sans);outline:none;transition:border-color 0.2s;}
+.search-box:focus{border-color:var(--accent2);}
+.search-box::placeholder{color:var(--muted);}
+.btn-action{padding:8px 18px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--text2);font-size:13px;cursor:pointer;transition:all 0.15s;font-family:var(--sans);font-weight:500;}
+.btn-action:hover{border-color:var(--accent2);color:var(--text);}
+.btn-stop{border-color:rgba(255,45,85,0.4);color:var(--stop);}
+.btn-stop:hover{border-color:var(--stop);background:var(--stop-bg);}
+.btn-danger:hover{border-color:var(--fail);color:var(--fail);}
+/* Table */
+.results-wrap{display:none;}
+.results-table{width:100%;border-collapse:collapse;}
+.results-table thead tr{border-bottom:1px solid var(--border);}
+.results-table th{text-align:left;padding:10px 14px;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:700;white-space:nowrap;}
+.row-card{border-bottom:1px solid var(--border);transition:background 0.15s;}
+.row-card:hover{background:rgba(255,255,255,0.015);}
+/* STOP banner */
+.stop-banner{background:var(--stop-bg);border-left:3px solid var(--stop);padding:8px 14px;font-size:12px;font-weight:700;color:var(--stop);letter-spacing:0.5px;}
+.row-main{display:grid;grid-template-columns:32px 200px 140px 90px 110px 105px 1fr;align-items:center;gap:0;cursor:pointer;padding:15px 14px;}
+.row-expand{color:var(--muted);font-size:10px;transition:transform 0.2s;user-select:none;}
+.row-expand.open{transform:rotate(90deg);color:var(--accent);}
+.col-name .cname{font-weight:600;font-size:14px;color:var(--text);}
+.col-name .fname{font-size:11px;color:var(--muted);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:190px;}
+.chip{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;}
+.chip-homeowners{background:rgba(255,179,71,0.12);color:var(--warn);border:1px solid rgba(255,179,71,0.2);}
+.chip-commercial{background:rgba(123,47,255,0.12);color:#a78bfa;border:1px solid rgba(123,47,255,0.2);}
+.chip-general{background:rgba(0,133,255,0.12);color:var(--accent);border:1px solid rgba(0,133,255,0.2);}
+.chip-unknown{background:var(--surface2);color:var(--muted);border:1px solid var(--border);}
+.status-badge{display:inline-flex;align-items:center;gap:5px;padding:5px 13px;border-radius:20px;font-size:12px;font-weight:700;}
+.status-pass{background:var(--pass-bg);color:var(--pass);border:1px solid rgba(0,232,135,0.2);}
+.status-fail{background:var(--fail-bg);color:var(--fail);border:1px solid rgba(255,77,106,0.2);}
+.status-warn{background:var(--warn-bg);color:var(--warn);border:1px solid rgba(255,179,71,0.2);}
+.err-pill{display:inline-block;background:var(--fail-bg);color:var(--fail);border:1px solid rgba(255,77,106,0.2);border-radius:5px;padding:2px 9px;margin:2px 3px 2px 0;font-size:11px;}
+.warn-pill{display:inline-block;background:var(--warn-bg);color:var(--warn);border:1px solid rgba(255,179,71,0.2);border-radius:5px;padding:2px 9px;margin:2px 3px 2px 0;font-size:11px;}
+.ok-text{color:var(--pass);font-size:12px;font-weight:600;}
+/* Details */
+.row-details{display:none;padding:4px 14px 22px 46px;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;}
+.row-details.open{display:grid;}
+.detail-group{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:16px;}
+.detail-group h4{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:12px;font-weight:700;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.check-item{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;font-size:13px;line-height:1.4;}
+.check-item:last-child{margin-bottom:0;}
+.ci-icon{flex-shrink:0;margin-top:1px;}
+.ci-ok{color:var(--pass);}.ci-fail{color:var(--fail);}.ci-warn{color:var(--warn);}.ci-info{color:var(--accent);}
+.ci-label{color:var(--text2);flex:1;}
+.ci-val{font-size:12px;font-weight:600;white-space:nowrap;}
+.ci-val.bad{color:var(--fail);}.ci-val.ok{color:var(--pass);}.ci-val.neutral{color:var(--text2);}
+.coverage-item{background:var(--surface3);border-radius:8px;padding:11px 13px;margin-bottom:7px;}
+.coverage-item:last-child{margin-bottom:0;}
+.cv-name{font-weight:600;font-size:13px;margin-bottom:6px;color:var(--text);}
+.cv-status{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:5px;}
+.cv-ok{background:var(--pass-bg);color:var(--pass);padding:2px 9px;border-radius:4px;font-size:11px;font-weight:600;}
+.cv-fail{background:var(--fail-bg);color:var(--fail);padding:2px 9px;border-radius:4px;font-size:11px;font-weight:600;}
+.cv-info{background:rgba(0,133,255,0.1);color:var(--accent);padding:2px 9px;border-radius:4px;font-size:11px;font-weight:600;}
+.spinner{display:inline-block;width:13px;height:13px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin 0.7s linear infinite;vertical-align:middle;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.processing-row td{padding:16px 14px;color:var(--text2);font-size:13px;border-bottom:1px solid var(--border);}
+.footer{margin-top:60px;padding-top:24px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.footer-brand{font-family:var(--brand);font-size:13px;letter-spacing:2px;background:linear-gradient(90deg,var(--accent),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.footer-note{font-size:12px;color:var(--muted);}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="brand-header">
+    <div class="brand-left">
+      <div class="brand-logo">🏠</div>
+      <div>
+        <div class="brand-name">PropQC</div>
+        <div class="brand-sub">Property Insurance Quality Check</div>
+      </div>
+    </div>
+    <div class="brand-right">
+      <span class="brand-badge"><span class="live-dot"></span>Live</span>
+      <span class="brand-badge">v1.0</span>
+    </div>
+  </div>
+
+  <div class="upload-zone" id="uploadZone">
+    <input type="file" id="fileInput" multiple accept=".pdf"/>
+    <span class="upload-icon">📂</span>
+    <h2>Drop Property Insurance PDFs Here</h2>
+    <p>Homeowners · Commercial · General Property · Bulk upload up to 20 PDFs</p>
+    <button class="btn-upload" onclick="document.getElementById('fileInput').click()">Select PDF Files</button>
+  </div>
+
+  <div class="progress-wrap" id="progressWrap">
+    <div class="progress-label"><span class="spinner"></span><span id="progressLabel">Processing...</span></div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+
+  <div class="summary-bar" id="summaryBar">
+    <div class="summary-card sc-total"><div class="sc-label">Total</div><div class="sc-val" id="scTotal">0</div></div>
+    <div class="summary-card sc-pass"><div class="sc-label">✓ Passed</div><div class="sc-val" id="scPass">0</div></div>
+    <div class="summary-card sc-fail"><div class="sc-label">✗ Flagged</div><div class="sc-val" id="scFail">0</div></div>
+    <div class="summary-card sc-warn"><div class="sc-label">⚠ Warnings</div><div class="sc-val" id="scWarn">0</div></div>
+  </div>
+
+  <div class="toolbar" id="toolbar">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="fail">Flagged</button>
+    <button class="filter-btn" data-filter="warn">Warnings</button>
+    <button class="filter-btn" data-filter="pass">Passed</button>
+    <input class="search-box" id="searchBox" type="text" placeholder="🔍  Search policy name..."/>
+    <button class="btn-action" onclick="exportCSV('all')">⬇ Export All</button>
+    <button class="btn-action btn-stop" onclick="exportCSV('flagged')">⬇ Export Flagged</button>
+    <button class="btn-action btn-danger" onclick="clearAll()">🗑 Clear All</button>
+  </div>
+
+  <div class="results-wrap" id="resultsWrap">
+    <table class="results-table">
+      <thead>
+        <tr>
+          <th></th><th>Policyholder</th><th>Policy Type</th><th>Effective Date</th>
+          <th>Coverages</th><th>Status</th><th>Flags / Notes</th>
+        </tr>
+      </thead>
+      <tbody id="resultsBody"></tbody>
+    </table>
+  </div>
+
+  <div class="footer">
+    <span class="footer-brand">PROPQC</span>
+    <span class="footer-note">All checks run locally · No data uploaded · Free to use forever</span>
+  </div>
+</div>
+
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+let allResults=[];
+let activeFilter='all';
+
+const zone=document.getElementById('uploadZone');
+zone.addEventListener('dragover',e=>{e.preventDefault();zone.classList.add('drag-over');});
+zone.addEventListener('dragleave',()=>zone.classList.remove('drag-over'));
+zone.addEventListener('drop',e=>{e.preventDefault();zone.classList.remove('drag-over');handleFiles(e.dataTransfer.files);});
+document.getElementById('fileInput').addEventListener('change',e=>{handleFiles(e.target.files);e.target.value='';});
+document.getElementById('searchBox').addEventListener('input',renderTable);
+document.querySelectorAll('.filter-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');activeFilter=btn.dataset.filter;renderTable();
+  });
+});
+
+async function handleFiles(files){
+  const pdfs=Array.from(files).filter(f=>f.name.toLowerCase().endsWith('.pdf'));
+  if(!pdfs.length)return;
+  document.getElementById('progressWrap').style.display='block';
+  document.getElementById('summaryBar').style.display='flex';
+  document.getElementById('toolbar').style.display='flex';
+  document.getElementById('resultsWrap').style.display='block';
+  const fill=document.getElementById('progressFill');
+  const label=document.getElementById('progressLabel');
+  for(let i=0;i<pdfs.length;i++){
+    label.textContent=`Processing ${i+1} of ${pdfs.length}: ${pdfs[i].name}`;
+    fill.style.width=((i/pdfs.length)*100)+'%';
+    const spinId='spin_'+Date.now();
+    const tbody=document.getElementById('resultsBody');
+    const spinRow=document.createElement('tr');
+    spinRow.id=spinId;spinRow.className='processing-row';
+    spinRow.innerHTML=`<td colspan="7"><span class="spinner"></span>&nbsp;Analyzing ${pdfs[i].name}...</td>`;
+    tbody.appendChild(spinRow);
+    try{
+      const text=await extractPDFText(pdfs[i]);
+      allResults.push(analyzePolicy(text,pdfs[i].name));
+    }catch(e){
+      allResults.push({filename:pdfs[i].name,name:pdfs[i].name.replace('.pdf','').replace(/_/g,' '),
+        policyType:'Unknown',errors:['Could not read PDF'],warnings:[],coverages:[],
+        status:'fail',effectiveDate:null,coverageCount:0,solidBrickFound:false,checks:{}});
+    }
+    document.getElementById(spinId)?.remove();
+    renderTable();updateSummary();
+  }
+  fill.style.width='100%';
+  label.textContent=`✓ Done! Processed ${pdfs.length} policy${pdfs.length>1?'ies':''}.`;
+  setTimeout(()=>{document.getElementById('progressWrap').style.display='none';},2500);
+}
+
+async function extractPDFText(file){
+  const buf=await file.arrayBuffer();
+  const pdf=await pdfjsLib.getDocument({data:buf}).promise;
+  let text='';
+  for(let p=1;p<=pdf.numPages;p++){
+    const page=await pdf.getPage(p);
+    const content=await page.getTextContent();
+    let pageText='';
+    let lastY=null;
+    for(const item of content.items){
+      if(lastY!==null&&Math.abs(item.transform[5]-lastY)>5) pageText+='\n';
+      pageText+=item.str+' ';
+      lastY=item.transform[5];
+    }
+    text+=pageText+'\n';
+  }
+  return text;
+}
+
+// ── MAIN ANALYSIS ──
+function analyzePolicy(text,filename){
+  const t=text;
+  const errors=[];
+  const warnings=[];
+
+  // ── Policy Type Detection ──
+  const isHomeowners=/Homeowners?|HO-|Home Insurance/i.test(t);
+  const isCommercial=/Commercial|BOP|Business|General Liability/i.test(t);
+  let policyType='General';
+  if(isHomeowners) policyType='Homeowners';
+  else if(isCommercial) policyType='Commercial';
+
+  // ── Policyholder Name ──
+  const nameMatch=t.match(/(?:Insured|Policyholder|Named Insured)\s*:?\s*\n?\s*([A-Z][a-zA-Z\s,\.]+?)(?:\n|Address|phone|email)/i);
+  const name=nameMatch?nameMatch[1].trim().split('\n')[0].trim():filename.replace(/\.pdf$/i,'').replace(/_/g,' ');
+
+  // ── Proposal and Effective Dates ──
+  const proposalMatch=t.match(/Proposal\s+(?:Date)?:?\s*(\d{1,2}\/\d{1,2}\/\d{2,4})/i);
+  const effectiveMatch=t.match(/(?:Proposed\s+)?Effective\s+(?:Date)?:?\s*(\d{1,2}\/\d{1,2}\/\d{2,4})/i);
+  let dateOk=false,dateDiff=null,proposalDateStr='',effectiveDateStr='';
+  if(proposalMatch&&effectiveMatch){
+    proposalDateStr=proposalMatch[1];
+    effectiveDateStr=effectiveMatch[1];
+    const pd=parseDate(proposalDateStr);
+    const ed=parseDate(effectiveDateStr);
+    if(pd&&ed){
+      dateDiff=Math.round((ed-pd)/(1000*60*60*24));
+      dateOk=(dateDiff===7);
+      if(dateDiff<7) errors.push(`Effective date too soon (${dateDiff} days — must be exactly 7 days after proposal)`);
+      else if(dateDiff>7) errors.push(`Effective date too far (${dateDiff} days — must be exactly 7 days after proposal)`);
+    }
+  } else {
+    warnings.push('Could not verify proposal and effective dates');
+  }
+
+  // ── Check for "Solid brick construction" ──
+  const hasSolidBrick=/Solid\s+brick\s+construction/i.test(t);
+  if(hasSolidBrick){
+    errors.push('Document contains "Solid brick construction" — must be removed');
+  }
+
+  // ── Required Coverages Check ──
+  const requiredCoverages=[
+    {name:'Roof Materials Loss Settlement',rx:/Roof\s+(?:Material|damage)?(?:\s+Loss)?\s+Settlement|Roof\s+coverage/i},
+    {name:'Fence Loss Settlement',rx:/Fence\s+(?:Loss)?\s+Settlement|Fence\s+coverage|fence\s+damage/i},
+    {name:'Equipment Breakdown',rx:/Equipment\s+Breakdown|Equipment\s+Breakdown\s+Coverage|Boiler\s+Machinery/i},
+    {name:'Utility Line Coverage',rx:/Utility\s+Line|Utility\s+Adjustment|Underground\s+Utility/i},
+    {name:'Medical Payments to Others',rx:/Medical\s+Payments?\s+(?:to\s+)?Others|F\s+-?\s+Medical\s+Payments|Medical\s+Payments\s+5,000/i}
+  ];
+
+  const foundCoverages=[];
+  const missingCoverages=[];
+  
+  for(const cov of requiredCoverages){
+    if(cov.rx.test(t)){
+      foundCoverages.push(cov.name);
+    } else {
+      missingCoverages.push(cov.name);
+      errors.push(`Missing required coverage: ${cov.name}`);
+    }
+  }
+
+  // ── Medical Payments Limit Check ──
+  const medicalMatch=t.match(/(?:Medical\s+Payments?\s+(?:to\s+)?Others|F\s+-?\s+Medical\s+Payments)[\s\S]{0,40}?\$?([\d,]+)/i);
+  const medicalLimit=medicalMatch?parseInt(medicalMatch[1].replace(/,/g,''),10):null;
+  if(medicalMatch&&medicalLimit&&medicalLimit!==5000){
+    warnings.push(`Medical Payments limit is $${medicalLimit.toLocaleString()} — verify $5,000 is correct`);
+  }
+
+  const coverages=foundCoverages.map(c=>({name:c,included:true}));
+  const coverageCount=foundCoverages.length;
+
+  const status=errors.length>0?'fail':warnings.length>0?'warn':'pass';
+  return{filename,name,policyType,effectiveDate:effectiveDateStr,coverageCount,coverages,
+    errors,warnings,status,solidBrickFound:hasSolidBrick,
+    checks:{dateOk,dateDiff,proposalDateStr,effectiveDateStr,medicalLimit}};
+}
+
+function parseDate(str){
+  const m1=str.match(/(\d{1,2})\/(\d{1,2})\/(\d{2,4})/);
+  if(m1){let y=parseInt(m1[3]);if(y<100)y+=2000;return new Date(y,parseInt(m1[1])-1,parseInt(m1[2]));}
+  return null;
+}
+
+// ── RENDER TABLE ──
+function renderTable(){
+  const tbody=document.getElementById('resultsBody');
+  const search=document.getElementById('searchBox').value.toLowerCase();
+  const filtered=allResults.filter(r=>{
+    const mf=activeFilter==='all'||r.status===activeFilter;
+    const ms=!search||r.name.toLowerCase().includes(search)||r.filename.toLowerCase().includes(search);
+    return mf&&ms;
+  });
+  tbody.innerHTML='';
+  if(!filtered.length){
+    tbody.innerHTML=`<tr><td colspan="7" style="padding:40px;text-align:center;color:var(--muted);font-size:13px;">No results match.</td></tr>`;
+    return;
+  }
+  filtered.forEach((r,idx)=>{
+    const uid='r_'+idx+'_'+Math.random().toString(36).substr(2,5);
+    const tr=document.createElement('tr');
+    tr.className='row-card';
+    const statusBadge=r.status==='pass'?`<span class="status-badge status-pass">✓ PASS</span>`:
+      r.status==='warn'?`<span class="status-badge status-warn">⚠ REVIEW</span>`:
+      `<span class="status-badge status-fail">✗ FLAGGED</span>`;
+    const typeChip=r.policyType==='Homeowners'?`<span class="chip chip-homeowners">Homeowners</span>`:
+      r.policyType==='Commercial'?`<span class="chip chip-commercial">Commercial</span>`:
+      `<span class="chip chip-general">General</span>`;
+    const pills=[
+      ...r.errors.map(e=>`<span class="err-pill">⚑ ${e}</span>`),
+      ...r.warnings.map(w=>`<span class="warn-pill">⚠ ${w}</span>`)
+    ].join('')||`<span class="ok-text">✓ All checks passed</span>`;
+    const coverageText=`${r.coverageCount}/5 Coverage${r.coverageCount!==1?'s':''}`;
+    tr.innerHTML=`<td colspan="7">
+      <div class="row-main" onclick="toggleDetail('${uid}')">
+        <span class="row-expand" id="exp_${uid}">▶</span>
+        <div class="col-name"><div class="cname">${r.name}</div><div class="fname">${r.filename}</div></div>
+        <div>${typeChip}</div>
+        <div style="font-size:13px;color:var(--text2);">${r.effectiveDate||'—'}</div>
+        <div style="font-size:13px;">${coverageText}</div>
+        <div>${statusBadge}</div>
+        <div>${pills}</div>
+      </div>
+      <div class="row-details" id="${uid}">${buildDetails(r)}</div>
+    </td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function toggleDetail(uid){
+  document.getElementById(uid).classList.toggle('open');
+  document.getElementById('exp_'+uid).classList.toggle('open');
+}
+
+function buildDetails(r){
+  const c=r.checks||{};
+  const ck=(ok,label,val='',isWarn=false)=>{
+    const icon=ok?'✓':isWarn?'⚠':'✗';
+    const cls=ok?'ci-ok':isWarn?'ci-warn':'ci-fail';
+    const vc=ok?'ok':isWarn?'neutral':'bad';
+    return `<div class="check-item"><span class="ci-icon ${cls}">${icon}</span>
+      <span class="ci-label">${label}</span>
+      ${val?`<span class="ci-val ${vc}">${val}</span>`:''}</div>`;
+  };
+
+  // Required Coverages
+  let covHTML='';
+  const requiredNames=['Roof Materials Loss Settlement','Fence Loss Settlement','Equipment Breakdown','Utility Line Coverage','Medical Payments to Others'];
+  for(const covName of requiredNames){
+    const found=r.coverages.some(c=>c.name===covName);
+    covHTML+=`<div class="coverage-item">
+      <div class="cv-name">${covName}</div>
+      <div class="cv-status">
+        <span class="${found?'cv-ok':'cv-fail'}">${found?'✓ Included':'✗ Missing'}</span>
+      </div>
+    </div>`;
+  }
+  if(!covHTML) covHTML=`<div style="font-size:12px;color:var(--muted);">No coverages detected</div>`;
+
+  const solidBrickWarning=r.solidBrickFound?`<div class="check-item"><span class="ci-icon ci-fail">✗</span><span class="ci-label">Solid Brick Construction Found</span><span class="ci-val bad">Must Remove</span></div>`:'';
+
+  return `
+    <div class="detail-group">
+      <h4>Policy Dates</h4>
+      ${ck(c.dateOk,'Effective Date vs Proposal (7 days)','${c.dateDiff!==null?c.dateDiff+' days':''}')}
+      ${c.proposalDateStr?`<div class="check-item"><span class="ci-label">Proposal Date: ${c.proposalDateStr}</span></div>`:''}
+      ${c.effectiveDateStr?`<div class="check-item"><span class="ci-label">Effective Date: ${c.effectiveDateStr}</span></div>`:''}
+    </div>
+    <div class="detail-group">
+      <h4>Required Coverages (5 Total)</h4>
+      ${covHTML}
+    </div>
+    <div class="detail-group">
+      <h4>Medical Payments</h4>
+      ${ck(c.medicalLimit===5000,'Medical Payments to Others',c.medicalLimit?'$'+c.medicalLimit.toLocaleString():'Not found')}
+    </div>
+    <div class="detail-group">
+      <h4>Content Check</h4>
+      ${ck(!r.solidBrickFound,'Solid Brick Construction',r.solidBrickFound?'FOUND':'NOT FOUND')}
+      ${solidBrickWarning}
+    </div>`;
+}
+
+function updateSummary(){
+  document.getElementById('scTotal').textContent=allResults.length;
+  document.getElementById('scPass').textContent=allResults.filter(r=>r.status==='pass').length;
+  document.getElementById('scFail').textContent=allResults.filter(r=>r.status==='fail').length;
+  document.getElementById('scWarn').textContent=allResults.filter(r=>r.status==='warn').length;
+}
+
+function exportCSV(type){
+  const data=type==='flagged'?allResults.filter(r=>r.status==='fail'):allResults;
+  if(!data.length){alert('No results to export.');return;}
+  const rows=[['Policyholder','Filename','Policy Type','Effective Date','Coverages Found','Status','Errors','Warnings']];
+  data.forEach(r=>rows.push([r.name,r.filename,r.policyType,r.effectiveDate||'',
+    r.coverageCount+'/5',r.status.toUpperCase(),
+    r.errors.join(' | '),r.warnings.join(' | ')]));
+  const csv=rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  a.download=`PropQC_${type}_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+}
+
+function clearAll(){
+  allResults=[];
+  document.getElementById('resultsBody').innerHTML='';
+  document.getElementById('summaryBar').style.display='none';
+  document.getElementById('toolbar').style.display='none';
+  document.getElementById('resultsWrap').style.display='none';
+  updateSummary();
+}
+</script>
+</body>
+</html>
