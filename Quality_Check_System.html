@@ -68,8 +68,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 .search-box::placeholder{color:var(--muted);}
 .btn-action{padding:8px 18px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--text2);font-size:13px;cursor:pointer;transition:all 0.15s;font-family:var(--sans);font-weight:500;}
 .btn-action:hover{border-color:var(--accent2);color:var(--text);}
-.btn-stop{border-color:rgba(255,45,85,0.4);color:var(--stop);}
-.btn-stop:hover{border-color:var(--stop);background:var(--stop-bg);}
 .btn-danger:hover{border-color:var(--fail);color:var(--fail);}
 /* Table */
 .results-wrap{display:none;}
@@ -78,18 +76,11 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 .results-table th{text-align:left;padding:10px 14px;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:700;white-space:nowrap;}
 .row-card{border-bottom:1px solid var(--border);transition:background 0.15s;}
 .row-card:hover{background:rgba(255,255,255,0.015);}
-/* STOP banner */
-.stop-banner{background:var(--stop-bg);border-left:3px solid var(--stop);padding:8px 14px;font-size:12px;font-weight:700;color:var(--stop);letter-spacing:0.5px;}
-.row-main{display:grid;grid-template-columns:32px 200px 140px 90px 110px 105px 1fr;align-items:center;gap:0;cursor:pointer;padding:15px 14px;}
+.row-main{display:grid;grid-template-columns:32px 250px 120px 120px 1fr;align-items:center;gap:0;cursor:pointer;padding:15px 14px;}
 .row-expand{color:var(--muted);font-size:10px;transition:transform 0.2s;user-select:none;}
 .row-expand.open{transform:rotate(90deg);color:var(--accent);}
 .col-name .cname{font-weight:600;font-size:14px;color:var(--text);}
-.col-name .fname{font-size:11px;color:var(--muted);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:190px;}
-.chip{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;}
-.chip-homeowners{background:rgba(255,179,71,0.12);color:var(--warn);border:1px solid rgba(255,179,71,0.2);}
-.chip-commercial{background:rgba(123,47,255,0.12);color:#a78bfa;border:1px solid rgba(123,47,255,0.2);}
-.chip-general{background:rgba(0,133,255,0.12);color:var(--accent);border:1px solid rgba(0,133,255,0.2);}
-.chip-unknown{background:var(--surface2);color:var(--muted);border:1px solid var(--border);}
+.col-name .fname{font-size:11px;color:var(--muted);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:240px;}
 .status-badge{display:inline-flex;align-items:center;gap:5px;padding:5px 13px;border-radius:20px;font-size:12px;font-weight:700;}
 .status-pass{background:var(--pass-bg);color:var(--pass);border:1px solid rgba(0,232,135,0.2);}
 .status-fail{background:var(--fail-bg);color:var(--fail);border:1px solid rgba(255,77,106,0.2);}
@@ -98,24 +89,17 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 .warn-pill{display:inline-block;background:var(--warn-bg);color:var(--warn);border:1px solid rgba(255,179,71,0.2);border-radius:5px;padding:2px 9px;margin:2px 3px 2px 0;font-size:11px;}
 .ok-text{color:var(--pass);font-size:12px;font-weight:600;}
 /* Details */
-.row-details{display:none;padding:4px 14px 22px 46px;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;}
+.row-details{display:none;padding:4px 14px 22px 46px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;}
 .row-details.open{display:grid;}
 .detail-group{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:16px;}
 .detail-group h4{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:12px;font-weight:700;padding-bottom:8px;border-bottom:1px solid var(--border);}
 .check-item{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;font-size:13px;line-height:1.4;}
 .check-item:last-child{margin-bottom:0;}
-.ci-icon{flex-shrink:0;margin-top:1px;}
-.ci-ok{color:var(--pass);}.ci-fail{color:var(--fail);}.ci-warn{color:var(--warn);}.ci-info{color:var(--accent);}
+.ci-icon{flex-shrink:0;margin-top:1px;font-size:14px;}
+.ci-ok{color:var(--pass);}.ci-fail{color:var(--fail);}.ci-warn{color:var(--warn);}
 .ci-label{color:var(--text2);flex:1;}
-.ci-val{font-size:12px;font-weight:600;white-space:nowrap;}
+.ci-val{font-size:12px;font-weight:600;}
 .ci-val.bad{color:var(--fail);}.ci-val.ok{color:var(--pass);}.ci-val.neutral{color:var(--text2);}
-.coverage-item{background:var(--surface3);border-radius:8px;padding:11px 13px;margin-bottom:7px;}
-.coverage-item:last-child{margin-bottom:0;}
-.cv-name{font-weight:600;font-size:13px;margin-bottom:6px;color:var(--text);}
-.cv-status{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:5px;}
-.cv-ok{background:var(--pass-bg);color:var(--pass);padding:2px 9px;border-radius:4px;font-size:11px;font-weight:600;}
-.cv-fail{background:var(--fail-bg);color:var(--fail);padding:2px 9px;border-radius:4px;font-size:11px;font-weight:600;}
-.cv-info{background:rgba(0,133,255,0.1);color:var(--accent);padding:2px 9px;border-radius:4px;font-size:11px;font-weight:600;}
 .spinner{display:inline-block;width:13px;height:13px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin 0.7s linear infinite;vertical-align:middle;}
 @keyframes spin{to{transform:rotate(360deg)}}
 .processing-row td{padding:16px 14px;color:var(--text2);font-size:13px;border-bottom:1px solid var(--border);}
@@ -128,10 +112,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 <div class="app">
   <div class="brand-header">
     <div class="brand-left">
-      <div class="brand-logo">🏠</div>
+      <div class="brand-logo">⚡</div>
       <div>
-        <div class="brand-name">PropQC</div>
-        <div class="brand-sub">Property Insurance Quality Check</div>
+        <div class="brand-name">TritoX</div>
+        <div class="brand-sub">Property QC · Endorsements Check</div>
       </div>
     </div>
     <div class="brand-right">
@@ -144,7 +128,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
     <input type="file" id="fileInput" multiple accept=".pdf"/>
     <span class="upload-icon">📂</span>
     <h2>Drop Property Insurance PDFs Here</h2>
-    <p>Homeowners · Commercial · General Property · Bulk upload up to 20 PDFs</p>
+    <p>Verify Endorsements · Dates · Construction · Bulk upload up to 20 PDFs</p>
     <button class="btn-upload" onclick="document.getElementById('fileInput').click()">Select PDF Files</button>
   </div>
 
@@ -165,9 +149,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
     <button class="filter-btn" data-filter="fail">Flagged</button>
     <button class="filter-btn" data-filter="warn">Warnings</button>
     <button class="filter-btn" data-filter="pass">Passed</button>
-    <input class="search-box" id="searchBox" type="text" placeholder="🔍  Search policy name..."/>
+    <input class="search-box" id="searchBox" type="text" placeholder="🔍 Search policy name..."/>
     <button class="btn-action" onclick="exportCSV('all')">⬇ Export All</button>
-    <button class="btn-action btn-stop" onclick="exportCSV('flagged')">⬇ Export Flagged</button>
+    <button class="btn-action" onclick="exportCSV('flagged')">⬇ Export Flagged</button>
     <button class="btn-action btn-danger" onclick="clearAll()">🗑 Clear All</button>
   </div>
 
@@ -175,8 +159,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
     <table class="results-table">
       <thead>
         <tr>
-          <th></th><th>Policyholder</th><th>Policy Type</th><th>Effective Date</th>
-          <th>Coverages</th><th>Status</th><th>Flags / Notes</th>
+          <th></th><th>Policyholder</th><th>Proposal Date</th><th>Effective Date</th><th>Status / Issues</th>
         </tr>
       </thead>
       <tbody id="resultsBody"></tbody>
@@ -184,7 +167,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
   </div>
 
   <div class="footer">
-    <span class="footer-brand">PROPQC</span>
+    <span class="footer-brand">TRITOX QC</span>
     <span class="footer-note">All checks run locally · No data uploaded · Free to use forever</span>
   </div>
 </div>
@@ -223,15 +206,14 @@ async function handleFiles(files){
     const tbody=document.getElementById('resultsBody');
     const spinRow=document.createElement('tr');
     spinRow.id=spinId;spinRow.className='processing-row';
-    spinRow.innerHTML=`<td colspan="7"><span class="spinner"></span>&nbsp;Analyzing ${pdfs[i].name}...</td>`;
+    spinRow.innerHTML=`<td colspan="5"><span class="spinner"></span>&nbsp;Analyzing ${pdfs[i].name}...</td>`;
     tbody.appendChild(spinRow);
     try{
       const text=await extractPDFText(pdfs[i]);
       allResults.push(analyzePolicy(text,pdfs[i].name));
     }catch(e){
       allResults.push({filename:pdfs[i].name,name:pdfs[i].name.replace('.pdf','').replace(/_/g,' '),
-        policyType:'Unknown',errors:['Could not read PDF'],warnings:[],coverages:[],
-        status:'fail',effectiveDate:null,coverageCount:0,solidBrickFound:false,checks:{}});
+        errors:['Could not read PDF'],warnings:[],status:'fail',proposalDate:null,effectiveDate:null,checks:{}});
     }
     document.getElementById(spinId)?.remove();
     renderTable();updateSummary();
@@ -266,15 +248,8 @@ function analyzePolicy(text,filename){
   const errors=[];
   const warnings=[];
 
-  // ── Policy Type Detection ──
-  const isHomeowners=/Homeowners?|HO-|Home Insurance/i.test(t);
-  const isCommercial=/Commercial|BOP|Business|General Liability/i.test(t);
-  let policyType='General';
-  if(isHomeowners) policyType='Homeowners';
-  else if(isCommercial) policyType='Commercial';
-
   // ── Policyholder Name ──
-  const nameMatch=t.match(/(?:Insured|Policyholder|Named Insured)\s*:?\s*\n?\s*([A-Z][a-zA-Z\s,\.]+?)(?:\n|Address|phone|email)/i);
+  const nameMatch=t.match(/(?:Insured|Policyholder|Named Insured)\s*:?\s*\n?\s*([A-Z][a-zA-Z\s,\.]+?)(?:\n|Address|phone|email|Policy)/i);
   const name=nameMatch?nameMatch[1].trim().split('\n')[0].trim():filename.replace(/\.pdf$/i,'').replace(/_/g,' ');
 
   // ── Proposal and Effective Dates ──
@@ -296,47 +271,57 @@ function analyzePolicy(text,filename){
     warnings.push('Could not verify proposal and effective dates');
   }
 
-  // ── Check for "Solid brick construction" ──
-  const hasSolidBrick=/Solid\s+brick\s+construction/i.test(t);
-  if(hasSolidBrick){
-    errors.push('Document contains "Solid brick construction" — must be removed');
-  }
-
-  // ── Required Coverages Check ──
-  const requiredCoverages=[
-    {name:'Roof Materials Loss Settlement',rx:/Roof\s+(?:Material|damage)?(?:\s+Loss)?\s+Settlement|Roof\s+coverage/i},
-    {name:'Fence Loss Settlement',rx:/Fence\s+(?:Loss)?\s+Settlement|Fence\s+coverage|fence\s+damage/i},
+  // ── REQUIRED ENDORSEMENTS ──
+  const requiredEndorsements=[
+    {name:'Roof Materials Loss Settlement',rx:/Roof\s+(?:Materials?\s+)?Loss\s+Settlement|Roof\s+(?:Material|damage)\s+(?:coverage|settlement)/i},
+    {name:'Fence Loss Settlement',rx:/Fence\s+Loss\s+Settlement|Fence\s+(?:coverage|settlement|damage)/i},
     {name:'Equipment Breakdown',rx:/Equipment\s+Breakdown|Equipment\s+Breakdown\s+Coverage|Boiler\s+Machinery/i},
-    {name:'Utility Line Coverage',rx:/Utility\s+Line|Utility\s+Adjustment|Underground\s+Utility/i},
-    {name:'Medical Payments to Others',rx:/Medical\s+Payments?\s+(?:to\s+)?Others|F\s+-?\s+Medical\s+Payments|Medical\s+Payments\s+5,000/i}
+    {name:'Utility Line Coverage',rx:/Utility\s+Line|Utility\s+Adjustment|Underground\s+Utility|Utility\s+Coverage/i}
   ];
 
-  const foundCoverages=[];
-  const missingCoverages=[];
-  
-  for(const cov of requiredCoverages){
-    if(cov.rx.test(t)){
-      foundCoverages.push(cov.name);
+  const foundEndorsements=[];
+  for(const end of requiredEndorsements){
+    if(end.rx.test(t)){
+      foundEndorsements.push(end.name);
     } else {
-      missingCoverages.push(cov.name);
-      errors.push(`Missing required coverage: ${cov.name}`);
+      errors.push(`Missing endorsement: ${end.name}`);
     }
   }
 
-  // ── Medical Payments Limit Check ──
-  const medicalMatch=t.match(/(?:Medical\s+Payments?\s+(?:to\s+)?Others|F\s+-?\s+Medical\s+Payments)[\s\S]{0,40}?\$?([\d,]+)/i);
-  const medicalLimit=medicalMatch?parseInt(medicalMatch[1].replace(/,/g,''),10):null;
-  if(medicalMatch&&medicalLimit&&medicalLimit!==5000){
-    warnings.push(`Medical Payments limit is $${medicalLimit.toLocaleString()} — verify $5,000 is correct`);
+  // ── Equipment Breakdown Limit Check ($100,000) ──
+  const ebMatch=t.match(/Equipment\s+Breakdown[\s\S]{0,80}?\$?([\d,]+)/i);
+  const ebLimit=ebMatch?parseInt(ebMatch[1].replace(/,/g,''),10):null;
+  if(ebMatch&&ebLimit&&ebLimit!==100000){
+    warnings.push(`Equipment Breakdown limit is $${ebLimit.toLocaleString()} — verify $100,000 is correct`);
   }
 
-  const coverages=foundCoverages.map(c=>({name:c,included:true}));
-  const coverageCount=foundCoverages.length;
+  // ── Utility Line Limit Check ($10,000) ──
+  const ulMatch=t.match(/Utility\s+(?:Line|Adjustment)[\s\S]{0,80}?\$?([\d,]+)/i);
+  const ulLimit=ulMatch?parseInt(ulMatch[1].replace(/,/g,''),10):null;
+  if(ulMatch&&ulLimit&&ulLimit!==10000){
+    warnings.push(`Utility Line limit is $${ulLimit.toLocaleString()} — verify $10,000 is correct`);
+  }
+
+  // ── CONSTRUCTION TYPE ──
+  const hasBrickVeneer=/Brick\s+veneer/i.test(t);
+  const hasWoodFraming=/Wood\s+framing|Wood\s+frame/i.test(t);
+  const hasSolidBrick=/Solid\s+brick\s+construction/i.test(t);
+  
+  if(hasSolidBrick){
+    errors.push('⛔ Document contains "Solid brick construction" — must be removed or corrected');
+  }
+
+  const constructionType=[];
+  if(hasBrickVeneer) constructionType.push('Brick Veneer');
+  if(hasWoodFraming) constructionType.push('Wood Framing');
+  if(!hasBrickVeneer&&!hasWoodFraming&&!hasSolidBrick){
+    warnings.push('Construction type (Brick Veneer / Wood Framing) not clearly identified');
+  }
 
   const status=errors.length>0?'fail':warnings.length>0?'warn':'pass';
-  return{filename,name,policyType,effectiveDate:effectiveDateStr,coverageCount,coverages,
-    errors,warnings,status,solidBrickFound:hasSolidBrick,
-    checks:{dateOk,dateDiff,proposalDateStr,effectiveDateStr,medicalLimit}};
+  return{filename,name,proposalDate:proposalDateStr,effectiveDate:effectiveDateStr,
+    endorsements:foundEndorsements,errors,warnings,status,
+    checks:{dateOk,dateDiff,ebLimit,ulLimit,constructionType,hasSolidBrick}};
 }
 
 function parseDate(str){
@@ -356,7 +341,7 @@ function renderTable(){
   });
   tbody.innerHTML='';
   if(!filtered.length){
-    tbody.innerHTML=`<tr><td colspan="7" style="padding:40px;text-align:center;color:var(--muted);font-size:13px;">No results match.</td></tr>`;
+    tbody.innerHTML=`<tr><td colspan="5" style="padding:40px;text-align:center;color:var(--muted);font-size:13px;">No results match.</td></tr>`;
     return;
   }
   filtered.forEach((r,idx)=>{
@@ -366,23 +351,17 @@ function renderTable(){
     const statusBadge=r.status==='pass'?`<span class="status-badge status-pass">✓ PASS</span>`:
       r.status==='warn'?`<span class="status-badge status-warn">⚠ REVIEW</span>`:
       `<span class="status-badge status-fail">✗ FLAGGED</span>`;
-    const typeChip=r.policyType==='Homeowners'?`<span class="chip chip-homeowners">Homeowners</span>`:
-      r.policyType==='Commercial'?`<span class="chip chip-commercial">Commercial</span>`:
-      `<span class="chip chip-general">General</span>`;
     const pills=[
       ...r.errors.map(e=>`<span class="err-pill">⚑ ${e}</span>`),
       ...r.warnings.map(w=>`<span class="warn-pill">⚠ ${w}</span>`)
     ].join('')||`<span class="ok-text">✓ All checks passed</span>`;
-    const coverageText=`${r.coverageCount}/5 Coverage${r.coverageCount!==1?'s':''}`;
-    tr.innerHTML=`<td colspan="7">
+    tr.innerHTML=`<td colspan="5">
       <div class="row-main" onclick="toggleDetail('${uid}')">
         <span class="row-expand" id="exp_${uid}">▶</span>
         <div class="col-name"><div class="cname">${r.name}</div><div class="fname">${r.filename}</div></div>
-        <div>${typeChip}</div>
+        <div style="font-size:13px;color:var(--text2);">${r.proposalDate||'—'}</div>
         <div style="font-size:13px;color:var(--text2);">${r.effectiveDate||'—'}</div>
-        <div style="font-size:13px;">${coverageText}</div>
-        <div>${statusBadge}</div>
-        <div>${pills}</div>
+        <div style="flex:1;">${statusBadge} ${pills}</div>
       </div>
       <div class="row-details" id="${uid}">${buildDetails(r)}</div>
     </td>`;
@@ -406,41 +385,39 @@ function buildDetails(r){
       ${val?`<span class="ci-val ${vc}">${val}</span>`:''}</div>`;
   };
 
-  // Required Coverages
-  let covHTML='';
-  const requiredNames=['Roof Materials Loss Settlement','Fence Loss Settlement','Equipment Breakdown','Utility Line Coverage','Medical Payments to Others'];
-  for(const covName of requiredNames){
-    const found=r.coverages.some(c=>c.name===covName);
-    covHTML+=`<div class="coverage-item">
-      <div class="cv-name">${covName}</div>
-      <div class="cv-status">
-        <span class="${found?'cv-ok':'cv-fail'}">${found?'✓ Included':'✗ Missing'}</span>
-      </div>
+  const requiredNames=['Roof Materials Loss Settlement','Fence Loss Settlement','Equipment Breakdown','Utility Line Coverage'];
+  let endHTML='';
+  for(const name of requiredNames){
+    const found=r.endorsements.some(e=>e===name);
+    endHTML+=`<div class="check-item">
+      <span class="ci-icon ${found?'ci-ok':'ci-fail'}">${found?'✓':'✗'}</span>
+      <span class="ci-label">${name}</span>
+      <span class="ci-val ${found?'ok':'bad'}">${found?'Included':'Missing'}</span>
     </div>`;
   }
-  if(!covHTML) covHTML=`<div style="font-size:12px;color:var(--muted);">No coverages detected</div>`;
 
-  const solidBrickWarning=r.solidBrickFound?`<div class="check-item"><span class="ci-icon ci-fail">✗</span><span class="ci-label">Solid Brick Construction Found</span><span class="ci-val bad">Must Remove</span></div>`:'';
+  const constructionInfo=c.constructionType&&c.constructionType.length>0?c.constructionType.join(', '):'Not detected';
 
   return `
     <div class="detail-group">
-      <h4>Policy Dates</h4>
-      ${ck(c.dateOk,'Effective Date vs Proposal (7 days)','${c.dateDiff!==null?c.dateDiff+' days':''}')}
-      ${c.proposalDateStr?`<div class="check-item"><span class="ci-label">Proposal Date: ${c.proposalDateStr}</span></div>`:''}
-      ${c.effectiveDateStr?`<div class="check-item"><span class="ci-label">Effective Date: ${c.effectiveDateStr}</span></div>`:''}
+      <h4>Dates</h4>
+      ${ck(c.dateOk,'Effective Date vs Proposal (7 days)',c.dateDiff!==null?`${c.dateDiff} days`:'')}
+      ${c.proposalDateStr?`<div class="check-item"><span class="ci-label">Proposal: ${c.proposalDateStr}</span></div>`:''}
+      ${c.effectiveDateStr?`<div class="check-item"><span class="ci-label">Effective: ${c.effectiveDateStr}</span></div>`:''}
     </div>
     <div class="detail-group">
-      <h4>Required Coverages (5 Total)</h4>
-      ${covHTML}
+      <h4>Required Endorsements</h4>
+      ${endHTML}
     </div>
     <div class="detail-group">
-      <h4>Medical Payments</h4>
-      ${ck(c.medicalLimit===5000,'Medical Payments to Others',c.medicalLimit?'$'+c.medicalLimit.toLocaleString():'Not found')}
+      <h4>Endorsement Limits</h4>
+      ${ck(c.ebLimit===100000,'Equipment Breakdown Limit',c.ebLimit?'$'+c.ebLimit.toLocaleString():'Not found')}
+      ${ck(c.ulLimit===10000,'Utility Line Limit',c.ulLimit?'$'+c.ulLimit.toLocaleString():'Not found')}
     </div>
     <div class="detail-group">
-      <h4>Content Check</h4>
-      ${ck(!r.solidBrickFound,'Solid Brick Construction',r.solidBrickFound?'FOUND':'NOT FOUND')}
-      ${solidBrickWarning}
+      <h4>Construction</h4>
+      ${ck(!c.hasSolidBrick,'Solid Brick Construction',c.hasSolidBrick?'FOUND':'NOT FOUND')}
+      <div class="check-item"><span class="ci-label">Type: ${constructionInfo}</span></div>
     </div>`;
 }
 
@@ -454,14 +431,14 @@ function updateSummary(){
 function exportCSV(type){
   const data=type==='flagged'?allResults.filter(r=>r.status==='fail'):allResults;
   if(!data.length){alert('No results to export.');return;}
-  const rows=[['Policyholder','Filename','Policy Type','Effective Date','Coverages Found','Status','Errors','Warnings']];
-  data.forEach(r=>rows.push([r.name,r.filename,r.policyType,r.effectiveDate||'',
-    r.coverageCount+'/5',r.status.toUpperCase(),
+  const rows=[['Policyholder','Filename','Proposal Date','Effective Date','Endorsements Found','Status','Errors','Warnings']];
+  data.forEach(r=>rows.push([r.name,r.filename,r.proposalDate||'',r.effectiveDate||'',
+    r.endorsements.join('; '),r.status.toUpperCase(),
     r.errors.join(' | '),r.warnings.join(' | ')]));
   const csv=rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
-  a.download=`PropQC_${type}_${new Date().toISOString().slice(0,10)}.csv`;
+  a.download=`TritoX_Property_QC_${type}_${new Date().toISOString().slice(0,10)}.csv`;
   a.click();
 }
 
